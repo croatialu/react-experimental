@@ -1,41 +1,56 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import initSqlJs, { SqlValue } from 'sql.js';
+import DrizzleORM, { eq } from 'drizzle-orm';
+import { SQLJsDatabase, drizzle } from 'drizzle-orm/sql-js';
+import { useQuery } from '@tanstack/react-query'
+import { createRxDatabase } from 'rxdb'
+import {
+  getRxStorageMemory
+} from 'rxdb/plugins/storage-memory';
 import './App.css'
+import { userSchema } from './client-db/collections/user';
+import { postSchema } from './client-db/collections/post';
+import { Database, createDatabase } from './client-db/db';
+
+console.log(userSchema, 'userSchema')
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [name, setName] = useState('')
+  const [database, setDatabase] = useState<Database | null>(null)
+  const [users, setUsers] = useState<any[]>([])
+  const [posts, setPosts] = useState<any[]>([])
+
+
+  const initDatabase = useCallback(async () => {
+    const db = await createDatabase()
+
+
+    const userList = await db.users.find().exec()
+    console.log(userList, 'userList')
+    setDatabase(db)
+  }, [])
+
+  useEffect(() => {
+    initDatabase()
+  }, [initDatabase])
 
   return (
     <>
-      <div className="h-dvh flex justify-center items-center">
-        <div className="flex flex-col justify-center items-center">
-          <div>
-            <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-              <img src={viteLogo} className="w-[160px]" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank" rel="noreferrer">
-              <img src={reactLogo} className="w-[160px]" alt="React logo" />
-            </a>
+      <div className="h-dvh flex flex-col justify-center items-center">
+        <div className="p-[12px] flex flex-col border border-solid border-gray-700">
+          <div className="space-x-[4px]">
+            <input value={name} onChange={e => setName(e.target.value)} />
+            <button onClick={async () => {
+              const result = await database?.users.add({
+                name: name
+              })
+              console.log(result, 'result')
+            }}>Create</button>
           </div>
-          <h1 className="text-red">Vite + React + TS</h1>
-          <div className="card">
-            <button onClick={() => setCount(count => count + 1)}>
-
-              count is
-              {count}
-            </button>
-            <div className="i-fluent:animal-cat-16-regular" />
-            <div className="i-ph-anchor-simple-thin" />
-            <p>
-              Edit
-              <code>src/App.tsx</code>
-              and save to test HMR
-            </p>
-          </div>
-          <p className="read-the-docs">
-            Click on the Vite and React logos to learn more
-          </p>
         </div>
       </div>
     </>
