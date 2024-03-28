@@ -2,4 +2,12 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu({
   react: true,
+  ignores: [
+    '**/dist/**',
+    '**/lib/**',
+  ],
+}, {
+  rules: {
+    'no-console': 'warn',
+  },
 })

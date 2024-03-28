@@ -12,6 +12,8 @@ import '@unocss/reset/normalize.css'
 import 'virtual:uno.css'
 
 import './index.css'
+import RXDBExample from './pages/rxdb/index.tsx'
+import SqlJSExample from './pages/sqljs/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -19,8 +21,12 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: 'about',
-    element: <div>About</div>,
+    path: '/rxdb',
+    element: <RXDBExample />,
+  },
+  {
+    path: '/sqljs',
+    element: <SqlJSExample />,
   },
 ])
 const queryClient = new QueryClient()
