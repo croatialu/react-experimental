@@ -1,8 +1,11 @@
 import './App.css'
-import { userSchema } from './pages/rxdb/client-db/collections/user'
 
-console.log(userSchema, 'userSchema')
+// @ts-expect-error 2333
+window.process = {
+  nextTick: (fn, ...args) => setTimeout(() => fn(...args)),
+}
 
+window.global = window
 function App() {
   return (
     <div>

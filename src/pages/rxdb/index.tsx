@@ -45,16 +45,26 @@ function RXDBExample() {
       refetchUserList()
     },
   })
+  const { mutateAsync: updateUserName } = useMutation({
+    mutationFn(payload: { nanoId: string, name: string }) {
+      return database!.users.updateUserName(payload)
+    },
+    onSuccess() {
+      refetchUserList()
+    },
+  })
 
   const initDatabase = useCallback(async () => {
     const db = await createDatabase()
-
+    // db.users.$.subscribe(() => {
+    //   refetchUserList()
+    // })
     setDatabase(db)
   }, [])
 
   useEffect(() => {
     initDatabase()
-  }, [initDatabase])
+  }, [])
 
   return (
     <>
@@ -82,8 +92,15 @@ function RXDBExample() {
                       {user.id}
                       {' '}
                       -
-                      {' '}
-                      {user.name}
+                      <input
+                        value={user.name}
+                        onChange={(event) => {
+                          updateUserName({
+                            nanoId: user.nanoId,
+                            name: event.target.value,
+                          })
+                        }}
+                      />
                     </span>
                     <button onClick={async () => {
                       await database?.users.removeUser({

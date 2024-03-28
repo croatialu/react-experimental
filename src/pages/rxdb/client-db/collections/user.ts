@@ -58,6 +58,7 @@ export interface UserCollectionMethods {
     success: RxDocument<UserDocType, UserDocMethods>[]
     error: RxStorageWriteError<UserDocType>[]
   }>
+  updateUserName: (payload: { nanoId: string, name: string }) => Promise<UserDocument | null>
 }
 
 export type UserCollection = RxCollection<UserDocType, UserDocMethods, UserCollectionMethods>
@@ -89,5 +90,16 @@ export const userCollectionMethods: UserCollectionMethods = {
   },
   async removeUser(this: UserCollection, payload: { nanoIds: string[] }) {
     return this.bulkRemove(payload.nanoIds)
+  },
+  async updateUserName(this: UserCollection, payload: { nanoId: string, name: string }) {
+    return this.findOne({
+      selector: {
+        nanoId: payload.nanoId,
+      },
+    }).update({
+      $set: {
+        name: payload.name,
+      },
+    })
   },
 }
