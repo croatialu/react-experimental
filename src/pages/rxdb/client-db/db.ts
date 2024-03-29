@@ -11,6 +11,9 @@ import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
 import { postSchema } from './collections/post'
 import { userCollectionMethods, userDocMethods, userSchema } from './collections/user'
 import type { DatabaseCollections } from './collections'
+import { getConnectionHandlerSimplePeer } from './plugins/connection-handler-simple-peer'
+import { replicateWebRTC } from 'rxdb/plugins/replication-webrtc'
+
 
 addRxPlugin(RxDBLeaderElectionPlugin)
 addRxPlugin(RxDBDevModePlugin)
@@ -26,7 +29,11 @@ const webrtcProvider = new WebrtcProvider('example/aaa', ydoc, {
 })
 const reactivityFactory: RxReactivityFactory<any> = {
   fromObservable(observable, initialValue: any) {
+    observable.subscribe(data => {
+
+    })
     console.log(observable, initialValue, 'fromObservable')
+    return initialValue
   },
 }
 export async function createDatabase() {
@@ -80,6 +87,32 @@ export async function createDatabase() {
   //   await database.users.cleanup()
   //   database.importJSON(ALL_JSON)
   // })
+
+  replicateWebRTC(
+    {
+      collection: database.users,
+      // The topic is like a 'room-name'. All clients with the same topic
+      // will replicate with each other. In most cases you want to use
+      // a different topic string per user.
+      topic: 'my-users-pool',
+      /**
+       * You need a collection handler to be able to create WebRTC connections.
+       * Here we use the simple peer handler which uses the 'simple-peer' npm library.
+       * To learn how to create a custom connection handler, read the source code,
+       * it is pretty simple.
+       */
+      connectionHandlerCreator: getConnectionHandlerSimplePeer({
+        // Set the signaling server url.
+        // You can use the server provided by RxDB for tryouts,
+        // but in production you should use your own server instead.
+        // signalingServerUrl: 'wss://signaling.rxdb.info/',
+        signalingServerUrl: 'ws://10.10.20.238:4444'
+
+      }),
+      pull: {},
+      push: {}
+    }
+  );
   console.log(database, 'database')
   return database
 }

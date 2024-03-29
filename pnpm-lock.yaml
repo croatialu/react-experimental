@@ -8,6 +8,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.28.9
     version: 5.28.9(react@18.2.0)
+  '@types/simple-peer':
+    specifier: ^9.11.8
+    version: 9.11.8
   '@unocss/reset':
     specifier: ^0.58.7
     version: 0.58.7
@@ -32,6 +35,12 @@ dependencies:
   rxdb:
     specifier: ^15.14.0
     version: 15.14.0(rxjs@7.8.1)
+  rxjs:
+    specifier: ^7.8.1
+    version: 7.8.1
+  simple-peer-light:
+    specifier: ^9.10.0
+    version: 9.10.0
   sql.js:
     specifier: ^1.10.2
     version: 1.10.2
@@ -8632,6 +8641,10 @@ packages:
     hasBin: true
     requiresBuild: true
     dev: true
+
+  /simple-peer-light@9.10.0:
+    resolution: {integrity: sha512-E0INlXmVy2XvVkyMallKYQlcTAD8S0ov+goSVDGD2k9vwkjBCOyFmESoUsv0Pi7P3nSh6TuMIIi+S/YRok9WLg==}
+    dev: false
 
   /simple-peer@9.11.1:
     resolution: {integrity: sha512-D1SaWpOW8afq1CZGWB8xTfrT3FekjQmPValrqncJMX7QFl8YwhrPTZvMCANLtgBwwdS+7zURyqxDDEmY558tTw==}
