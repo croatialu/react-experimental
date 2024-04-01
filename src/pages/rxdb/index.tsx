@@ -30,8 +30,14 @@ function RXDBExample() {
     if (!database)
       return
 
-    database.users.find().$.subscribe((data) => {
-      console.log(data.map(v => v.toJSON()), 'data')
+    database.users.find({
+      sort: [
+        {
+          createAt: 'asc',
+        },
+      ],
+    }).$.subscribe(() => {
+      refetchUserList()
     })
   }, [database])
 
@@ -71,6 +77,11 @@ function RXDBExample() {
       <div className="h-dvh flex flex-col justify-center items-center">
         <div className="p-[12px] flex flex-col border border-solid border-gray-700">
           <div className="space-x-[4px]">
+            <button onClick={() => {
+              refetchUserList()
+            }}>
+              Refresh
+            </button>
             <input value={name} onChange={e => setName(e.target.value)} />
             <button onClick={async () => {
               addUser(name)
