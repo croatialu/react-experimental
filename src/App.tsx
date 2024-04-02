@@ -21,6 +21,9 @@ function App() {
         <li>
           <a href="/webrtc">webrtc</a>
         </li>
+        <li>
+          <a href="/mini-webrtc">mini-webrtc</a>
+        </li>
       </ol>
     </div>
   )

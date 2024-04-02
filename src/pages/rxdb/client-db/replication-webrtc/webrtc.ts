@@ -219,6 +219,7 @@ export class WebrtcConn {
       announceSignalingInfo(room)
     })
     this.peer.on('error', err => {
+      console.log('simple-peer error', err)
       log('Error in connection to ', logging.BOLD, remotePeerId, ': ', err)
       announceSignalingInfo(room)
     })
@@ -421,11 +422,11 @@ export class SignalingConn extends ws.WebsocketClient {
           const execMessage = (data: any) => {
             const webrtcConns = room.webrtcConns
             const peerId = room.peerId
-            console.log(data.from, peerId, 'execMessage')
             if (data == null || data.from === peerId || (data.to !== undefined && data.to !== peerId) || room.bcConns.has(data.from)) {
               // ignore messages that are not addressed to this conn, or from clients that are connected via broadcastchannel
               return
             }
+            console.log(data.from, peerId, data.from === peerId, 'execMessage')
 
             const emitPeerChange = webrtcConns.has(data.from)
               ? () => { }

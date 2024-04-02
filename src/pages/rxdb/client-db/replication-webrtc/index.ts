@@ -84,7 +84,6 @@ export async function replicateWebRTC<RxDocType, PeerType>(
           filter(() => !pool.canceled)
       )
       .subscribe(async (peer) => {
-        debugger
           if (options.isPeerValid) {
               const isValid = await options.isPeerValid(peer);
               if (!isValid) {
@@ -243,7 +242,6 @@ export class RxWebRTCReplicationPool<RxDocType, PeerType> {
       // only if isMaster=false it has a replicationState
       replicationState?: RxWebRTCReplicationState<RxDocType>
   ) {
-    debugger
       const peerState: WebRTCPeerState<RxDocType, PeerType> = {
           peer,
           replicationState,
@@ -257,7 +255,6 @@ export class RxWebRTCReplicationPool<RxDocType, PeerType> {
       }
   }
   removePeer(peer: PeerType) {
-    debugger
       const peerState = getFromMapOrThrow(this.peerStates$.getValue(), peer);
       this.peerStates$.getValue().delete(peer);
       this.peerStates$.next(this.peerStates$.getValue());

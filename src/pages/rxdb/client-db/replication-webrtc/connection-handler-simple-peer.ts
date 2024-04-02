@@ -196,22 +196,22 @@ export function getConnectionHandlerSimplePeer({
                                     }
                                 });
 
-                                newSimplePeer.on('error', (error: any) => {
-                                    console.log(
-                                        performance.now(), 'error time'
-                                    )
-                                    debugger
+                                // newSimplePeer.on('error', (error: any) => {
+                                //     console.log(
+                                //         performance.now(), 'error time'
+                                //     )
+                                //     debugger
 
-                                    console.log(newSimplePeer.id, 'newSimplePeer - error', error)
-                                    error$.next(newRxError('RC_WEBRTC_PEER', {
-                                        error
-                                    }));
-                                    if (!disconnected) {
-                                        disconnected = true;
-                                        disconnect$.next(newSimplePeer);
-                                    }
-                                    // newSimplePeer.destroy();
-                                });
+                                //     console.log(newSimplePeer.id, 'newSimplePeer - error', error)
+                                //     error$.next(newRxError('RC_WEBRTC_PEER', {
+                                //         error
+                                //     }));
+                                //     if (!disconnected) {
+                                //         disconnected = true;
+                                //         disconnect$.next(newSimplePeer);
+                                //     }
+                                //     // newSimplePeer.destroy();
+                                // });
 
                                 newSimplePeer.on('connect', () => {
                                     console.log(newSimplePeer.id, 'newSimplePeer - connect')
@@ -219,13 +219,12 @@ export function getConnectionHandlerSimplePeer({
                                 });
 
                                 newSimplePeer.on('close', () => {
-                                    debugger
                                     console.log(newSimplePeer.id, 'newSimplePeer - close', disconnected)
                                     if (!disconnected) {
                                         disconnected = true;
                                         disconnect$.next(newSimplePeer);
                                     }
-                                    // newSimplePeer.destroy();
+                                    newSimplePeer.destroy();
                                 });
                             }
                             msg.otherPeerIds.forEach((remotePeerId, index) => {

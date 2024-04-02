@@ -15,6 +15,7 @@ import './index.css'
 import RXDBExample from './pages/rxdb/index.tsx'
 import SqlJSExample from './pages/sqljs/index.tsx'
 import { WebRTCExample } from './pages/webrtc/index.tsx'
+import { MiniWebRTCExample } from './pages/mini-webrtc/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/webrtc',
     element: <WebRTCExample />,
+  },
+  {
+    path: '/mini-webrtc',
+    element: <MiniWebRTCExample />,
   },
 ])
 const queryClient = new QueryClient()

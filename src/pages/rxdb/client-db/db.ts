@@ -12,6 +12,7 @@ import { postSchema } from './collections/post'
 import { userCollectionMethods, userDocMethods, userSchema } from './collections/user'
 import type { DatabaseCollections } from './collections'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
+// import { getConnectionHandlerSimplePeer, replicateWebRTC } from 'rxdb/plugins/replication-webrtc'
 import { replicateWebRTC, getConnectionHandlerSimplePeer } from './replication-webrtc'
 
 
@@ -33,7 +34,7 @@ const reactivityFactory: RxReactivityFactory<any> = {
 export async function createDatabase() {
   const database = await createRxDatabase<DatabaseCollections>({
     name: 'example_rxdb',
-    storage: getRxStorageMemory(),
+    storage: getRxStorageDexie(),
     multiInstance: true,
   })
 
