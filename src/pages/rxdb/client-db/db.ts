@@ -11,9 +11,8 @@ import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
 import { postSchema } from './collections/post'
 import { userCollectionMethods, userDocMethods, userSchema } from './collections/user'
 import type { DatabaseCollections } from './collections'
-import { replicateWebRTC } from 'rxdb/plugins/replication-webrtc'
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie'
-import { getConnectionHandlerSimplePeer } from './plugins/connection-handler-simple-peer'
+import { replicateWebRTC, getConnectionHandlerSimplePeer } from './replication-webrtc'
 
 
 addRxPlugin(RxDBLeaderElectionPlugin)
@@ -58,18 +57,18 @@ export async function createDatabase() {
 
 
 
-  // replicateWebRTC(
-  //   {
-  //     collection: database.users,
-  //     topic: 'my-users-pool',
-  //     connectionHandlerCreator: getConnectionHandlerSimplePeer({
-  //       signalingServerUrl: 'ws://10.10.20.238:4444'
-  //     }),
-  //     pull: {},
-  //     push: {
-  //     }
-  //   }
-  // );
+  replicateWebRTC(
+    {
+      collection: database.users,
+      topic: 'my-users-pool',
+      connectionHandlerCreator: getConnectionHandlerSimplePeer({
+        signalingServerUrl: 'ws://10.10.20.238:4444'
+      }),
+      pull: {},
+      push: {
+      }
+    }
+  );
   return database
 }
 

@@ -2,7 +2,7 @@ import './App.css'
 
 // @ts-expect-error 2333
 window.process = {
-  nextTick: (fn, ...args) => setTimeout(() => fn(...args)),
+  nextTick: (fn, ...args) => setTimeout(() => fn(...args), 3000),
 }
 
 window.global = window
@@ -17,6 +17,9 @@ function App() {
         </li>
         <li>
           <a href="/sqljs">drizzle orm + sql.js</a>
+        </li>
+        <li>
+          <a href="/webrtc">webrtc</a>
         </li>
       </ol>
     </div>

@@ -14,6 +14,7 @@ import 'virtual:uno.css'
 import './index.css'
 import RXDBExample from './pages/rxdb/index.tsx'
 import SqlJSExample from './pages/sqljs/index.tsx'
+import { WebRTCExample } from './pages/webrtc/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/sqljs',
     element: <SqlJSExample />,
+  },
+  {
+    path: '/webrtc',
+    element: <WebRTCExample />,
   },
 ])
 const queryClient = new QueryClient()
