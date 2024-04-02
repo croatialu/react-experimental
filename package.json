@@ -5,6 +5,7 @@
   "private": true,
   "packageManager": "pnpm@8.15.5",
   "scripts": {
+    "start:signaling": "node ./bin/server.js",
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint .",
@@ -35,6 +36,7 @@
     "simple-peer": "^9.11.1",
     "simple-peer-light": "^9.10.0",
     "sql.js": "^1.10.2",
+    "ws": "^8.16.0",
     "y-webrtc": "^10.3.0",
     "yjs": "^13.6.14",
     "zod": "^3.22.4",

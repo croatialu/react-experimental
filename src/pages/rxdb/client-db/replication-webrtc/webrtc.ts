@@ -291,7 +291,6 @@ export class Room {
   synced = false
   name: string
   key: CryptoKey | undefined
-  webrtcConns = new Map<string, WebrtcConn>()
   bcConns = new Set<string>()
   mux = createMutex()
   bcConnected = false

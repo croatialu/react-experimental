@@ -53,6 +53,9 @@ dependencies:
   sql.js:
     specifier: ^1.10.2
     version: 1.10.2
+  ws:
+    specifier: ^8.16.0
+    version: 8.16.0
   y-webrtc:
     specifier: ^10.3.0
     version: 10.3.0(yjs@13.6.14)

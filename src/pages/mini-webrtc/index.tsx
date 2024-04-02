@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
-import { MiniWebrtc } from '../rxdb/client-db/replication-webrtc/mini-webrtc'
+import { MiniWebRTC } from './core/mini-webrtc'
 
 export const MiniWebRTCExample = () => {
 
 
   const miniWebrtc = useMemo(() => {
-    return new MiniWebrtc(
+    return new MiniWebRTC(
       'example-mini-webrtc' + '_' + location.hash,
-      'ws://yjs-server.lukunhe.soft.sr'
+      'ws://localhost:4444'
     )
   }, [])
 
@@ -19,12 +19,14 @@ export const MiniWebRTCExample = () => {
   const [list, setList] = useState<string[]>([])
 
   useEffect(() => {
-    miniWebrtc.send(inputValue)
+    miniWebrtc.send({
+      value: inputValue
+    })
   }, [inputValue])
 
   useEffect(() => {
-    miniWebrtc.on('message', (v) => {
-      setInputValue(v)
+    miniWebrtc.on('message', (data) => {
+      setInputValue(data.value)
     })
   }, [])
 

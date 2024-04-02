@@ -330,7 +330,6 @@ class WebrtcConn {
       initiator,
     });
 
-
     peer.on('connect', this.#handlePeerConnect)
     peer.on('signal', this.#handlePeerSignal)
     peer.on('data', this.#handlePeerData)
