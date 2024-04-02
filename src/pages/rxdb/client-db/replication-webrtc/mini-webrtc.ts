@@ -8,6 +8,7 @@ import type {
   SignalData as PeerSignalData,
 } from "simple-peer";
 import { nanoid } from "nanoid";
+import { ObservableV2 } from "lib0/observable.js";
 
 const Peer = _Peer as Peer;
 
@@ -38,50 +39,70 @@ interface WSAnnouncePayload {
 
 type SignalingConnMessagePayload = WSSubscribePayload | WSPublishPayload<WSSignalPayload | WSAnnouncePayload>
 
+const signalingConns = new Map<string, SignalingConn>();
 const rooms = new Map<string, Room>();
 const webrtcConns = new Map<string, WebrtcConn>();
 
 
+function createAnnouncePayload(roomName: string, { from }: { from: string }): WSPublishPayload<WSAnnouncePayload> {
+  return {
+    type: 'publish',
+    topic: roomName,
+    data: {
+      type: 'announce',
+      from,
+    }
+  }
+}
+
+function createSignalPayload(
+  roomName: string, { from, to, signal, token }: Omit<WSSignalPayload, 'type'>): WSPublishPayload<WSSignalPayload> {
+  return {
+    type: 'publish',
+    topic: roomName,
+    data: {
+      type: 'signal',
+      from,
+      to,
+      signal,
+      token
+    }
+  }
+}
 
 class SignalingConn {
-  wsUrl: string
+  static New = (url: string) => {
+    const signalingConn = signalingConns.get(url) || new SignalingConn(url)
+    signalingConns.set(url, signalingConn)
+    return signalingConn
+  }
   ws?: WebSocket;
-  #channel?: BroadcastChannel;
-  #elector?: LeaderElector
+  wsUrl?: string;
+  isWebSocketReady: Promise<boolean>
+  #wsReadyResolve = () => { }
 
-  constructor(roomName: string, url: string) {
+  constructor(url?: string) {
     this.wsUrl = url;
 
-
+    this.isWebSocketReady = new Promise((resolve) => {
+      this.#wsReadyResolve = () => resolve(true)
+    })
   }
 
   initWebSocket() {
+    if (!this.wsUrl || this.ws) return
     const ws = this.ws = new WebSocket(this.wsUrl);
+
     ws.addEventListener('message', this.#handleWSMessage);
     ws.addEventListener('open', this.#handleWSOpen);
     ws.addEventListener('close', this.#handleWSClose);
   }
 
   destroyWebSocket() {
-    this.ws?.close()
+    if (!this.ws) return
+    this.ws.close()
     this.ws = undefined
-  }
-
-  initBC(roomName: string) {
-    if (this.#channel) return
-    const channel = this.#channel = new BroadcastChannel(roomName);
-    const elector = this.#elector = createLeaderElection(channel);
-
-    elector.awaitLeadership().then(() => {
-      document.title = `👑 MiniWebrtc - ${roomName} - Leader`
-    });
-  }
-
-  destroyBC() {
-    this.#channel?.close()
-    this.#channel = undefined
-    this.#elector?.die()
-    this.#elector = undefined
+    this.wsUrl = undefined
   }
 
   #handleWSMessage = (message: MessageEvent<string>) => {
@@ -94,8 +115,6 @@ class SignalingConn {
       return
     }
     const peerId = room.peerId
-
-
 
     const payload = data.data
 
@@ -154,12 +173,11 @@ class SignalingConn {
         break;
     }
 
-
-
     console.log(data, 'message')
   }
 
   #handleWSOpen = () => {
+    this.#wsReadyResolve()
     this.send({
       type: 'subscribe',
       topics: Array.from(rooms.keys())
@@ -178,8 +196,9 @@ class SignalingConn {
     console.log('close')
   }
 
-  send(data: any) {
-    this.ws.send(JSON.stringify(data))
+  async send(data: any) {
+    await this.isWebSocketReady
+    this.ws?.send(JSON.stringify(data))
   }
 
   publish(roomName: string, data: Record<string, unknown>) {
@@ -190,49 +209,103 @@ class SignalingConn {
     })
   }
 
-  publishSignal(roomName: string, data: { from: string, to: string, token: number, signal: PeerSignalData }) {
+  announce(roomName: string, payload: { from: string }) {
+    this.publish(roomName, {
+      ...payload,
+      type: 'announce',
+    })
+  }
 
+  publishSignal(roomName: string, data: { from: string, to: string, token: number, signal: PeerSignalData }) {
     this.publish(roomName, {
       ...data,
       type: 'signal',
     })
-
   }
 
 
+  destroy() {
+    signalingConns.delete(this.wsUrl!)
+    if (signalingConns.size === 0) {
+      this.destroyWebSocket()
+    }
+  }
 }
 
 class Room {
+
+  static New = (signalingConn: SignalingConn, roomName: string) => {
+    const room = rooms.get(roomName) || new Room(signalingConn, roomName)
+    rooms.set(roomName, room)
+    return room
+  }
+
   #signaling: SignalingConn;
+  #channel: BroadcastChannel;
+  #elector: LeaderElector
   peerId = nanoid(21)
   roomName: string
+
+
   constructor(signalingConn: SignalingConn, roomName: string) {
     this.roomName = roomName;
     this.#signaling = signalingConn;
 
 
+    const channel = this.#channel = new BroadcastChannel(roomName);
+    this.#elector = createLeaderElection(channel);
 
-  }
-
-  publish(data: Record<string, unknown>) {
-    this.#signaling.send({
-      type: 'publish',
-      topic: this.roomName,
-      data
+    this.#channel.addEventListener('message', (data) => {
+      console.log('message', data)
     })
+
+    this.initRoom()
   }
 
-  get isElectorLeader() {
-    return this.#elector.isLeader
+
+  async initRoom() {
+    await this.#elector.awaitLeadership()
+    this.#signaling.initWebSocket()
   }
 
 
+  async sendSocketMsg(data: any){
+    this.#signaling.send(data)
+  }
 
-  announce(payload: Record<string, any>) {
-    this.publish({
-      ...payload,
-      type: 'announce',
-    })
+  async send(data: any) {
+    await this.#elector.hasLeader()
+    console.log('send room', data)
+    if (this.#elector.isLeader) {
+      this.#signaling.send(data)
+    } else {
+      this.#channel.postMessage(data)
+    }
+  }
+
+  async announce(payload: { from: string }) {
+    const value = createAnnouncePayload(this.roomName, payload)
+    this.sendSocketMsg(value)
+  }
+
+  async publishSignal(payload: Omit<WSSignalPayload, 'type'>): Promise<void> {
+    await this.#elector.hasLeader()
+    if (!this.#elector.isLeader) return
+
+    const value = createSignalPayload(this.roomName, payload)
+    this.sendSocketMsg(value)
+  }
+
+
+  destroy() {
+    this.#channel.close();
+    this.#elector.die();
+    rooms.delete(this.roomName)
+
+    if (rooms.size === 0) {
+      this.#signaling.ws?.close()
+    }
+
   }
 
 }
@@ -257,9 +330,10 @@ class WebrtcConn {
       initiator,
     });
 
+
     peer.on('connect', this.#handlePeerConnect)
     peer.on('signal', this.#handlePeerSignal)
-
+    peer.on('data', this.#handlePeerData)
   }
 
   get connected() {
@@ -269,6 +343,10 @@ class WebrtcConn {
 
   resetGlareToken() {
     this.glareToken = undefined
+  }
+
+  #handlePeerData = (data: any) => {
+    console.log('data', data)
   }
 
   #handlePeerSignal = (signal: PeerSignalData) => {
@@ -296,13 +374,22 @@ class WebrtcConn {
 }
 
 
-export class MiniWebrtc {
+export class MiniWebrtc extends ObservableV2<{ message: (data: any) => void }> {
   room: Room;
   signalingConn: SignalingConn;
   constructor(roomName: string, signalingUrl: string) {
-    this.signalingConn = new SignalingConn(signalingUrl);
-    this.room = new Room(this.signalingConn, roomName);
-    rooms.set(roomName, this.room);
+    super()
+    const signalingConn = SignalingConn.New(signalingUrl);
+    this.signalingConn = signalingConn;
+    const room = Room.New(signalingConn, roomName);
+    this.room = room;
   }
 
+  send(data: any){
+    this.room.send(data)
+  }
+
+  destroy() {
+    this.room.destroy()
+  }
 }

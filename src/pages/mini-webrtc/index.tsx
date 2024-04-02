@@ -3,18 +3,30 @@ import { MiniWebrtc } from '../rxdb/client-db/replication-webrtc/mini-webrtc'
 
 export const MiniWebRTCExample = () => {
 
-  
+
   const miniWebrtc = useMemo(() => {
     return new MiniWebrtc(
       'example-mini-webrtc' + '_' + location.hash,
       'ws://yjs-server.lukunhe.soft.sr'
     )
   }, [])
+
+
+
+
   const [peerId, setPeerId] = useState('')
   const [inputValue, setInputValue] = useState('')
   const [list, setList] = useState<string[]>([])
 
+  useEffect(() => {
+    miniWebrtc.send(inputValue)
+  }, [inputValue])
 
+  useEffect(() => {
+    miniWebrtc.on('message', (v) => {
+      setInputValue(v)
+    })
+  }, [])
 
   console.log(miniWebrtc, 'miniWebrtc')
 
