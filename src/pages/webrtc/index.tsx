@@ -3,13 +3,13 @@ import {
   default as Peer
   //@ts-expect-error 233
 } from 'simple-peer/simplepeer.min.js';
-import { WebrtcProvider } from '../rxdb/client-db/replication-webrtc/webrtc';
+import { WebrtcProvider } from './core/webrtc';
 
 export const WebRTCExample = () => {
 
   const webrtcProvider = useMemo(() => {
     return new WebrtcProvider('example-webrtc', {
-      signaling: ['ws://yjs-server.lukunhe.soft.sr'],
+      signaling: ['ws://localhost:4444'],
     })
   }, [])
   const [peerId, setPeerId] = useState('')

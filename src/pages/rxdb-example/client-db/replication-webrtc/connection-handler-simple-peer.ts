@@ -8,6 +8,7 @@ import {
     //@ts-expect-error 233
 } from 'simple-peer/simplepeer.min.js';
 import { RxError, RxTypeError, promiseWait, ensureNotFalsy, randomCouchString, newRxError, getFromMapOrThrow, PROMISE_RESOLVE_VOID } from 'rxdb';
+import { SimplePeer as SimplePeerType } from 'simple-peer';
 export type SimplePeer = SimplePeerInstance & {
     // add id to make debugging easier
     id: string;
@@ -142,10 +143,10 @@ export function getConnectionHandlerSimplePeer({
             socket = new (webSocketConstructor as any)(signalingServerUrl) as WebSocket;
             socket.onclose = () => createSocket();
             socket.onopen = () => {
-                console.log('socket onopen')
+                // console.log('socket onopen')
                 ensureNotFalsy(socket).onmessage = (msgEvent: any) => {
                     const msg: PeerMessage = JSON.parse(msgEvent.data as any);
-                    console.log('socket onmessage', msgEvent, msg)
+                    // console.log('socket onmessage', msgEvent, msg)
                     switch (msg.type) {
                         case 'init':
                             ownPeerId = msg.yourPeerId;
@@ -170,7 +171,7 @@ export function getConnectionHandlerSimplePeer({
                                 peers.set(remotePeerId, newSimplePeer);
 
                                 newSimplePeer.on('signal', (signal: any) => {
-                                    console.log(newSimplePeer.id, 'newSimplePeer - signal', signal)
+                                    // console.log(newSimplePeer.id, 'newSimplePeer - signal', signal)
                                     sendMessage(ensureNotFalsy(socket), {
                                         type: 'signal',
                                         senderPeerId: ownPeerId,
@@ -182,7 +183,7 @@ export function getConnectionHandlerSimplePeer({
 
                                 newSimplePeer.on('data', (messageOrResponse: any) => {
                                     messageOrResponse = JSON.parse(messageOrResponse.toString());
-                                    console.log(newSimplePeer.id, 'newSimplePeer - data', messageOrResponse)
+                                    // console.log(newSimplePeer.id, 'newSimplePeer - data', messageOrResponse)
                                     if (messageOrResponse.result) {
                                         response$.next({
                                             peer: newSimplePeer,
@@ -214,12 +215,12 @@ export function getConnectionHandlerSimplePeer({
                                 // });
 
                                 newSimplePeer.on('connect', () => {
-                                    console.log(newSimplePeer.id, 'newSimplePeer - connect')
+                                    // console.log(newSimplePeer.id, 'newSimplePeer - connect')
                                     connect$.next(newSimplePeer);
                                 });
 
                                 newSimplePeer.on('close', () => {
-                                    console.log(newSimplePeer.id, 'newSimplePeer - close', disconnected)
+                                    // console.log(newSimplePeer.id, 'newSimplePeer - close', disconnected)
                                     if (!disconnected) {
                                         disconnected = true;
                                         disconnect$.next(newSimplePeer);

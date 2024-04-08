@@ -295,7 +295,7 @@ export class Room {
   mux = createMutex()
   bcConnected = false
   provider: WebrtcProvider
-
+  webrtcConns: Map<string, WebrtcConn> = new Map()
 
 
   constructor(provider: WebrtcProvider, name: string, key: CryptoKey | undefined) {

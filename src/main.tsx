@@ -16,6 +16,7 @@ import RXDBExample from './pages/rxdb/index.tsx'
 import SqlJSExample from './pages/sqljs/index.tsx'
 import { WebRTCExample } from './pages/webrtc/index.tsx'
 import { MiniWebRTCExample } from './pages/mini-webrtc/index.tsx'
+import RXDBExample2 from './pages/rxdb-example/index.tsx'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: '/rxdb',
     element: <RXDBExample />,
+  }, 
+  {
+    path: '/rxdb2',
+    element: <RXDBExample2 />,
   },
   {
     path: '/sqljs',

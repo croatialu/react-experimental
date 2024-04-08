@@ -1,0 +1,1 @@
+export type CollectionDocToParams<T> = Omit<T, 'createAt' | 'nanoId' | 'id'>

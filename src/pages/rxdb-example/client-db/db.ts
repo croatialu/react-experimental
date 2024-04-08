@@ -27,11 +27,12 @@ const reactivityFactory: RxReactivityFactory<any> = {
     return initialValue
   },
 }
-export async function createDatabase() {
+export async function createDatabase(name: string) {
   const database = await createRxDatabase<DatabaseCollections>({
-    name: 'example_rxdb',
+    name: 'example_rxdb' + '_' + name,
     storage: getRxStorageMemory(),
     multiInstance: true,
+    reactivity: reactivityFactory
   })
 
   // show leadership in title
@@ -49,7 +50,7 @@ export async function createDatabase() {
     posts: {
       schema: postSchema,
     },
-    
+
   })
 
 

@@ -1,0 +1,107 @@
+{
+  "name": "example_rxdb_example2",
+  "instanceToken": "bcmysjaadv",
+  "collections": [
+      {
+          "name": "users",
+          "schemaHash": "27e2a2a1e34d991cfd211387b94c0690a5d942f84e73c0ee462ca15e5c378ec2",
+          "docs": [
+              {
+                  "id": 3,
+                  "nanoId": "0ZAjQQs4eJeYngdT8Pr5Q",
+                  "name": "123",
+                  "createAt": "2024-04-07T13:09:19.564Z",
+                  "_meta": {
+                      "lwt": 1712495359564.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 8,
+                  "nanoId": "DL2OwOfN5RmQUOEzmV3LZ",
+                  "name": "123456ab",
+                  "createAt": "2024-04-07T13:09:27.959Z",
+                  "_meta": {
+                      "lwt": 1712495367960.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 6,
+                  "nanoId": "F52DiovEr5tn_T1cgjwPz",
+                  "name": "123456",
+                  "createAt": "2024-04-07T13:09:22.370Z",
+                  "_meta": {
+                      "lwt": 1712495362370.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 1,
+                  "nanoId": "GEgQ-QAXDCiV5bXy_yGPg",
+                  "name": "1",
+                  "createAt": "2024-04-07T13:09:17.270Z",
+                  "_meta": {
+                      "lwt": 1712495357271.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 4,
+                  "nanoId": "VG2qxGPyXpyGI-jscu1Gi",
+                  "name": "1234",
+                  "createAt": "2024-04-07T13:09:20.429Z",
+                  "_meta": {
+                      "lwt": 1712495360430.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 2,
+                  "nanoId": "gBHGniwQiyoJSbnBlX5F-",
+                  "name": "12",
+                  "createAt": "2024-04-07T13:09:18.438Z",
+                  "_meta": {
+                      "lwt": 1712495358439.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 9,
+                  "nanoId": "hEHV7Y0voxdNr1Ms4FO-B",
+                  "name": "123456ab",
+                  "createAt": "2024-04-07T13:09:28.320Z",
+                  "_meta": {
+                      "lwt": 1712495368321.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 7,
+                  "nanoId": "iOhNwJ24Y5-CWGVH931rg",
+                  "name": "123456a",
+                  "createAt": "2024-04-07T13:09:23.835Z",
+                  "_meta": {
+                      "lwt": 1712495363835.01
+                  },
+                  "_deleted": false
+              },
+              {
+                  "id": 5,
+                  "nanoId": "zLgFBuyuEw8YjwqB8lKdz",
+                  "name": "12345",
+                  "createAt": "2024-04-07T13:09:21.383Z",
+                  "_meta": {
+                      "lwt": 1712495361383.01
+                  },
+                  "_deleted": false
+              }
+          ]
+      },
+      {
+          "name": "posts",
+          "schemaHash": "61d517f35888a139a677bb4b8dbd318de7dae9c3ec75a8289963d515f24cdf7c",
+          "docs": []
+      }
+  ]
+}

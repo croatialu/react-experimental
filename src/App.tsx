@@ -16,6 +16,9 @@ function App() {
           <a href="/rxdb">rxdb</a>
         </li>
         <li>
+          <a href="/rxdb2">rxdb example 2</a>
+        </li>
+        <li>
           <a href="/sqljs">drizzle orm + sql.js</a>
         </li>
         <li>
