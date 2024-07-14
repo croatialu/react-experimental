@@ -15,6 +15,11 @@ export const user = sqliteTable('user', {
   nanoIdx: index('nano_idx').on(table.nanoId),
 }))
 
+export const employees = sqliteTable('employees', {
+  id: integer('id').primaryKey().notNull(),
+  name: text('name')
+})
+
 export type UserEntity = typeof user.$inferSelect
 export type NewUser = typeof user.$inferInsert
 

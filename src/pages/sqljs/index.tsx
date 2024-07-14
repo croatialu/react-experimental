@@ -4,6 +4,7 @@ import type { SQLJsDatabase } from 'drizzle-orm/sql-js'
 import { drizzle } from 'drizzle-orm/sql-js'
 import initSqlJs from 'sql.js'
 import { user } from '../../../db/schema'
+import { eq } from 'drizzle-orm'
 
 async function initSql() {
   const sql = await initSqlJs({
@@ -26,7 +27,6 @@ async function initSql() {
   return new Promise<SQLJsDatabase>((resolve) => {
     loadBinaryFile('/db/example.sqlite', (data: any) => {
       const sqldb = new sql.Database(data)
-      // Database is ready
       const database = drizzle(sqldb)
       resolve(database)
     })
@@ -59,9 +59,9 @@ function SqlJSExample() {
 
   const { mutateAsync: removeUser } = useMutation({
     async mutationFn(nanoId: string) {
-      return database?.delete(user).values({
-        nanoId,
-      })
+      return database?.delete(user).where(
+        eq(user.nanoId, nanoId)
+      )
     },
     onSuccess() {
       refetchUserList()
@@ -78,6 +78,7 @@ function SqlJSExample() {
     initDatabase()
   }, [initDatabase])
 
+  console.log(users, 'users')
   return (
     <>
       <div className="h-dvh flex flex-col justify-center items-center">
@@ -102,9 +103,7 @@ function SqlJSExample() {
                   >
                     <span>
                       {user.id}
-                      {' '}
                       -
-                      {' '}
                       {user.name}
                     </span>
                     <button onClick={async () => {
